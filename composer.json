@@ -21,9 +21,7 @@
         }
     ],
 	"require": {
-	   "yiisoft/yii2": "@stable",
-	   "infoweb-internet-solutions/yii2-cms": "@stable",
-	   "infoweb-internet-solutions/yii2-cms-pages": "@stable"
+	   "yiisoft/yii2": "@stable"
 	},
 	"autoload": {
 		"psr-4": {
