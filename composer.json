@@ -21,7 +21,8 @@
         }
     ],
 	"require": {
-	   "yiisoft/yii2": "@stable"
+	   "yiisoft/yii2": "@stable",
+      "creocoder/yii2-translateable": "~1.0"
 	},
 	"autoload": {
 		"psr-4": {

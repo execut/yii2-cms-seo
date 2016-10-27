@@ -49,15 +49,24 @@ class SeoBehavior extends Behavior
     public function afterUpdate($event)
     {
         $post = Yii::$app->request->post();
-
         if (isset($post['SeoLang'])) {
-            $seo = Seo::findOne([
+            $attributes = [
                 'entity'    => $this->owner->className(),
                 'entity_id' => $this->owner->id
-            ]);
+            ];
+            if (!($seo = Seo::findOne($attributes))) {
+                $seo = new Seo($attributes);
+            }
 
             foreach ($post['SeoLang'] as $language => $data) {
-                foreach ($data as $attribute => $translation) {
+                if (is_array($data)) {
+                    foreach ($data as $attribute => $translation) {
+                        $seo->translate($language)->$attribute = $translation;
+                    }
+                } else {
+                    $attribute = $language;
+                    $translation = $data;
+                    $language = \yii::$app->language;
                     $seo->translate($language)->$attribute = $translation;
                 }
             }

@@ -3,6 +3,8 @@
 namespace infoweb\seo\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "seo_lang".
@@ -22,6 +24,22 @@ class SeoLang extends \yii\db\ActiveRecord
         return 'seo_lang';
     }
 
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+                'value' => function () {
+                    return time();
+                },
+            ],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -37,8 +55,10 @@ class SeoLang extends \yii\db\ActiveRecord
             [['title', 'description', 'keywords'], 'trim'],
             [['seo_id'], 'integer'],
             [['language'], 'string', 'max' => 10],
+            [['text'], 'safe'],
+            [['header'], 'string', 'max' => 1000],
             [['title'], 'string', 'max' => 255],
-            [['seo_id', 'language'], 'unique', 'targetAttribute' => ['seo_id', 'language'], 'message' => Yii::t('infoweb/seo', 'The combination of Seo ID and Language has already been taken.')]
+            [['seo_id', 'language'], 'unique', 'targetAttribute' => ['seo_id', 'language'], 'message' => Yii::t('infoweb/seo', 'The combination of Seo ID and Language has already been taken.')],
         ];
     }
 
@@ -52,7 +72,9 @@ class SeoLang extends \yii\db\ActiveRecord
             'language' => Yii::t('app', 'Language'),
             'title' => Yii::t('app', 'Title'),
             'description' => Yii::t('app', 'Description'),
+            'header' => Yii::t('infoweb/seo', 'Header'),
             'keywords' => Yii::t('infoweb/seo', 'Keywords'),
+            'text' => Yii::t('infoweb/seo', 'Text'),
         ];
     }
 
