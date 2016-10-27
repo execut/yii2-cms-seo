@@ -20,7 +20,7 @@ SQL
 );
 
             if ($this->db->createCommand('SELECT count(*) FROM pg_extension WHERE extname=\'bdr\'')->queryScalar()) {
-                $i->execute('SET LOCAL default_sequenceam = \'bdr\';');
+                $this->execute('SET LOCAL default_sequenceam = \'bdr\';');
             }
 
             $entityDefinition = "seo_entity NOT NULL DEFAULT 'page'";
