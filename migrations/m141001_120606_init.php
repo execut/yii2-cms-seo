@@ -18,6 +18,11 @@ class m141001_120606_init extends Migration
 CREATE TYPE seo_entity AS ENUM ('page');
 SQL
 );
+
+            if ($this->db->createCommand('SELECT count(*) FROM pg_extension WHERE extname=\'bdr\'')->queryScalar()) {
+                $i->execute('SET LOCAL default_sequenceam = \'bdr\';');
+            }
+
             $entityDefinition = "seo_entity NOT NULL DEFAULT 'page'";
         } else {
             $entityDefinition = "ENUM('page') NOT NULL DEFAULT 'page'";
