@@ -5,12 +5,13 @@ use yii\db\Schema;
 
 class m160204_125421_update_entity_field extends Migration
 {
-    public function up()
+    public function safeUp()
     {
-        $this->alterColumn('seo', 'entity', Schema::TYPE_STRING . '(255) NOT NULL');
+        $this->dropColumn('seo', 'entity');
+        $this->addColumn('seo', 'entity', $this->string()->notNull());
     }
 
-    public function down()
+    public function safeDown()
     {
         echo "m160204_125421_update_entity_field cannot be reverted.\n";
 

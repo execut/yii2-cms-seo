@@ -5,21 +5,23 @@ use yii\db\Migration;
 
 class m141001_120606_init extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $tableOptions = null;
         
         if ($this->db->driverName === 'mysql') {
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+        } else if ($this->db->driverName === 'pgsql') {
+            $this->execute('CREATE TYPE seo_entity AS ENUM (\'page\')');
         }
         
         // Create 'seo' table
         $this->createTable('{{%seo}}', [
-            'id'            => Schema::TYPE_PK,
-            'entity'        => "ENUM('page') NOT NULL DEFAULT 'page'",
-            'entity_id'     => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
-            'created_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
-            'updated_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
+            'id'            => $this->primaryKey(),
+            'entity'        => "seo_entity NOT NULL DEFAULT 'page'",
+            'entity_id'     => $this->integer()->unsigned()->notNull(),
+            'created_at'    => $this->integer()->unsigned()->notNull(),
+            'updated_at'    => $this->integer()->unsigned()->notNull(),
         ], $tableOptions);
         
         $this->createIndex('entity_entity_id', '{{%seo}}', ['entity', 'entity_id'], true);
@@ -27,21 +29,21 @@ class m141001_120606_init extends Migration
 
         // Create 'seo_lang' table
         $this->createTable('{{%seo_lang}}', [
-            'seo_id'        => Schema::TYPE_INTEGER . ' NOT NULL',
-            'language'      => Schema::TYPE_STRING . '(10) NOT NULL',
-            'title'         => Schema::TYPE_STRING . '(255) NOT NULL',
+            'seo_id'        => $this->integer()->notNull(),
+            'language'      => $this->string(10)->notNull(),
+            'title'         => $this->string()->notNull(),
             'description'   => Schema::TYPE_TEXT . ' NOT NULL',
             'keywords'      => Schema::TYPE_TEXT . ' NOT NULL',
-            'created_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
-            'updated_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
+            'created_at'    => $this->integer()->unsigned()->notNull(),
+            'updated_at'    => $this->integer()->unsigned()->notNull(),
         ], $tableOptions);
 
         $this->addPrimaryKey('seo_id_language', '{{%seo_lang}}', ['seo_id', 'language']);
-        $this->createIndex('language', '{{%seo_lang}}', 'language');
+        $this->createIndex('seo_language_i', '{{%seo_lang}}', 'language');
         $this->addForeignKey('FK_SEO_LANG_SEO_ID', '{{%seo_lang}}', 'seo_id', '{{%seo}}', 'id', 'CASCADE', 'RESTRICT');
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('seo_lang');
         $this->dropTable('seo');

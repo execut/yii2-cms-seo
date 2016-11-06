@@ -2,7 +2,10 @@
 
 namespace infoweb\seo\models;
 
+use infoweb\cms\helpers\ArrayHelper;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "seo_lang".
@@ -28,6 +31,7 @@ class SeoLang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['created_at', 'updated_at'], 'safe'],
             [['language'], 'required'],
             // Only required for existing records
             [['seo_id'], 'required', 'when' => function($model) {
@@ -40,6 +44,20 @@ class SeoLang extends \yii\db\ActiveRecord
             [['title'], 'string', 'max' => 255],
             [['seo_id', 'language'], 'unique', 'targetAttribute' => ['seo_id', 'language'], 'message' => Yii::t('infoweb/seo', 'The combination of Seo ID and Language has already been taken.')]
         ];
+    }
+
+    public function behaviors()
+    {
+        return ArrayHelper::merge(parent::behaviors(), [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+                'value' => function() { return time(); },
+            ],
+        ]);
     }
 
     /**
