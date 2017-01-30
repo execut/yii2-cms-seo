@@ -58,7 +58,7 @@ class SeoLang extends \yii\db\ActiveRecord
             [['text'], 'safe'],
             [['header'], 'string', 'max' => 1000],
             [['title'], 'string', 'max' => 255],
-            [['seo_id', 'language'], 'unique', 'targetAttribute' => ['seo_id', 'language'], 'message' => Yii::t('infoweb/seo', 'The combination of Seo ID and Language has already been taken.')],
+            [['seo_id', 'language'], 'unique', 'targetAttribute' => ['seo_id' => 'seo_id', 'language' => 'language'], 'message' => Yii::t('infoweb/seo', 'The combination of Seo ID and Language has already been taken.')],
         ];
     }
 
